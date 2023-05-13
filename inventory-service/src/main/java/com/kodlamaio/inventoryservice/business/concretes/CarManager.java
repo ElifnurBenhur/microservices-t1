@@ -1,5 +1,7 @@
 package com.kodlamaio.inventoryservice.business.concretes;
 
+import com.kodlamaio.commonpackage.events.inventory.CarCreatedEvent;
+import com.kodlamaio.commonpackage.events.inventory.CarDeletedEvent;
 import com.kodlamaio.commonpackage.utils.mappers.ModelMapperService;
 import com.kodlamaio.inventoryservice.business.abstracts.CarService;
 import com.kodlamaio.inventoryservice.business.dto.requests.create.CreateCarRequest;
@@ -11,6 +13,7 @@ import com.kodlamaio.inventoryservice.business.dto.responses.update.UpdateCarRes
 import com.kodlamaio.inventoryservice.business.rules.CarBusinessRules;
 import com.kodlamaio.inventoryservice.entities.Car;
 import com.kodlamaio.inventoryservice.entities.enums.State;
+import com.kodlamaio.inventoryservice.kafka.producer.InventoryProducer;
 import com.kodlamaio.inventoryservice.repository.CarRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ public class CarManager implements CarService {
     private final CarRepository repository;
     private final ModelMapperService mapper;
     private final CarBusinessRules rules;
+    private final InventoryProducer producer;
 
     @Override
     public List<GetAllCarsResponse> getAll() {
@@ -48,13 +52,16 @@ public class CarManager implements CarService {
     @Override
     public CreateCarResponse add(CreateCarRequest request) {
         var car = mapper.forRequest().map(request, Car.class);
-        car.setId(null);
+        car.setId(UUID.randomUUID());
         car.setState(State.Availabe);
-        repository.save(car);
+        var carCreated= repository.save(car);
+        sendKafkaCarCreatedEvent(carCreated);
         var response = mapper.forResponse().map(car, CreateCarResponse.class);
 
         return response;
     }
+
+
 
     @Override
     public UpdateCarResponse update(UUID id, UpdateCarRequest request) {
@@ -71,5 +78,15 @@ public class CarManager implements CarService {
     public void delete(UUID id) {
         rules.checkIfCarExists(id);
         repository.deleteById(id);
+        sendKafkaCarDeletedEvent(id);
+    }
+
+    private void sendKafkaCarDeletedEvent(UUID id) {
+        producer.sendMessage(new CarDeletedEvent(id));
+    }
+
+    private void sendKafkaCarCreatedEvent(Car carCreated) {
+        var event= mapper.forResponse().map(carCreated, CarCreatedEvent.class);
+        producer.sendMessage(event);
     }
 }
