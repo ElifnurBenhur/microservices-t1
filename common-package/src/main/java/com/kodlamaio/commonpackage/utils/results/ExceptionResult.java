@@ -5,10 +5,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-
 @Setter
 @Getter
-public class ExceptionResult <T>{
+public class ExceptionResult<T> {
     private LocalDateTime timestamp;
     private String type;
     private T message;

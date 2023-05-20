@@ -1,7 +1,9 @@
 package com.kodlamaio.inventoryservice.business.concretes;
 
+import com.kodlamaio.commonpackage.utils.dto.ClientResponse;
 import com.kodlamaio.commonpackage.events.inventory.CarCreatedEvent;
 import com.kodlamaio.commonpackage.events.inventory.CarDeletedEvent;
+import com.kodlamaio.commonpackage.utils.exceptions.BusinessException;
 import com.kodlamaio.commonpackage.utils.mappers.ModelMapperService;
 import com.kodlamaio.inventoryservice.business.abstracts.CarService;
 import com.kodlamaio.inventoryservice.business.dto.requests.create.CreateCarRequest;
@@ -53,7 +55,7 @@ public class CarManager implements CarService {
     public CreateCarResponse add(CreateCarRequest request) {
         var car = mapper.forRequest().map(request, Car.class);
         car.setId(UUID.randomUUID());
-        car.setState(State.Availabe);
+        car.setState(State.Available);
         var carCreated= repository.save(car);
         sendKafkaCarCreatedEvent(carCreated);
         var response = mapper.forResponse().map(car, CreateCarResponse.class);
@@ -81,6 +83,27 @@ public class CarManager implements CarService {
         sendKafkaCarDeletedEvent(id);
     }
 
+    @Override
+    public ClientResponse checkIfCarAvailable(UUID id) {
+        var response = new ClientResponse();
+        validateCarAvailability(id, response);
+
+        return response;
+    }
+
+    @Override
+    public ClientResponse checkIfCarAvailableForMaintenance(UUID id) {
+        var response = new ClientResponse();
+        validateCarAvailabilityForMaintenance(id, response);
+        return response;
+    }
+
+
+
+    @Override
+    public void changeStateByCarId(State state, UUID id) {
+        repository.changeStateByCarId(state, id);
+    }
     private void sendKafkaCarDeletedEvent(UUID id) {
         producer.sendMessage(new CarDeletedEvent(id));
     }
@@ -88,5 +111,27 @@ public class CarManager implements CarService {
     private void sendKafkaCarCreatedEvent(Car carCreated) {
         var event= mapper.forResponse().map(carCreated, CarCreatedEvent.class);
         producer.sendMessage(event);
+    }
+
+    private void validateCarAvailability(UUID id, ClientResponse response) {
+        try {
+            rules.checkIfCarExists(id);
+            rules.checkCarAvailability(id);
+            response.setSuccess(true);
+        } catch (BusinessException exception) {
+            response.setSuccess(false);
+            response.setMessage(exception.getMessage());
+        }
+    }
+    private void validateCarAvailabilityForMaintenance(UUID id, ClientResponse response) {
+        try {
+            rules.checkIfCarExists(id);
+            rules.checkIfCarUnderMaintenance(id);
+            rules.checkIfCarRented(id);
+            response.setSuccess(true);
+        } catch (BusinessException exception) {
+            response.setSuccess(false);
+            response.setMessage(exception.getMessage());
+        }
     }
 }

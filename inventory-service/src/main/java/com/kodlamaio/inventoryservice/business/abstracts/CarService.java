@@ -1,6 +1,7 @@
 package com.kodlamaio.inventoryservice.business.abstracts;
 
 
+import com.kodlamaio.commonpackage.utils.dto.ClientResponse;
 import com.kodlamaio.inventoryservice.business.dto.requests.create.CreateCarRequest;
 import com.kodlamaio.inventoryservice.business.dto.requests.update.UpdateCarRequest;
 import com.kodlamaio.inventoryservice.business.dto.responses.create.CreateCarResponse;
@@ -17,6 +18,10 @@ public interface CarService {
     GetCarResponse getById(UUID id);
     CreateCarResponse add(CreateCarRequest request);
     UpdateCarResponse update(UUID id, UpdateCarRequest request);
+
+    ClientResponse checkIfCarAvailable(UUID id);
+    ClientResponse checkIfCarAvailableForMaintenance(UUID id);
+    void changeStateByCarId(State state, UUID id);
     void delete(UUID id);
     //void changeState(int carId, State state);
 }

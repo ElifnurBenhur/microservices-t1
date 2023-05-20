@@ -1,6 +1,5 @@
 package com.kodlamaio.commonpackage.configuration.exceptions;
 
-
 import com.kodlamaio.commonpackage.utils.constants.ExceptionTypes;
 import com.kodlamaio.commonpackage.utils.exceptions.BusinessException;
 import com.kodlamaio.commonpackage.utils.results.ExceptionResult;
@@ -53,4 +52,3 @@ public class RestExceptionHandler {
         return new ExceptionResult<>(ExceptionTypes.Exception.Runtime, exception.getMessage());
     }
 }
-
