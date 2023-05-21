@@ -1,4 +1,4 @@
-package com.kodlamaio.paymentservice.business.dto.requests;
+package com.kodlamaio.commonpackage.utils.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

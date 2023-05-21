@@ -13,7 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateRentalResponse {
-
     private UUID id;
     private UUID carId;
     private double dailyPrice;

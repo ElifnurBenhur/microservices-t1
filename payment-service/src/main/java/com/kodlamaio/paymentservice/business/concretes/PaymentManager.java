@@ -1,6 +1,8 @@
 package com.kodlamaio.paymentservice.business.concretes;
 
+import com.kodlamaio.commonpackage.utils.dto.ClientResponse;
 import com.kodlamaio.commonpackage.utils.dto.CreateRentalPaymentRequest;
+import com.kodlamaio.commonpackage.utils.exceptions.BusinessException;
 import com.kodlamaio.paymentservice.business.abstracts.PaymentService;
 import com.kodlamaio.paymentservice.business.abstracts.PosService;
 import com.kodlamaio.paymentservice.business.dto.requests.create.CreatePaymentRequest;
@@ -76,12 +78,28 @@ public class PaymentManager implements PaymentService {
     }
 
     @Override
-    public void processRentalPayment(CreateRentalPaymentRequest request) {
-        rules.checkIfPaymentIsValid(request);
-        Payment payment = repository.findByCardNumber(request.getCardNumber());
-        rules.checkIfBalanceIsEnough(request.getPrice(), payment.getBalance());
-        posService.pay(); // fake pos service
-        payment.setBalance(payment.getBalance() - request.getPrice());
-        repository.save(payment);
+    public ClientResponse processRentalPayment(CreateRentalPaymentRequest request) {
+        var response = new ClientResponse();
+        validatePayment(request,response);
+        return response;
+
+
+    }
+
+    private void validatePayment(CreateRentalPaymentRequest request,ClientResponse response){
+        try {
+            rules.checkIfPaymentIsValid(request);
+            Payment payment = repository.findByCardNumber(request.getCardNumber());
+            rules.checkIfBalanceIsEnough(request.getPrice(), payment.getBalance());
+            posService.pay(); // fake pos service
+            payment.setBalance(payment.getBalance() - request.getPrice());
+            repository.save(payment);
+            response.setSuccess(true);
+        }
+        catch (BusinessException exception){
+            response.setSuccess(false);
+            response.setMessage(exception.getMessage());
+
+        }
     }
 }

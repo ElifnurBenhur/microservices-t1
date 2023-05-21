@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RentalService {
-
     List<GetAllRentalsResponse> getAll();
     GetRentalResponse getById(UUID id);
     CreateRentalResponse add(CreateRentalRequest request);

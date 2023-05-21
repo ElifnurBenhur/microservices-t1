@@ -1,20 +1,25 @@
 package com.kodlamaio.rentalservice.business.rules;
 
+import com.kodlamaio.commonpackage.utils.dto.ClientResponse;
+import com.kodlamaio.commonpackage.utils.dto.CreateRentalPaymentRequest;
 import com.kodlamaio.commonpackage.utils.exceptions.BusinessException;
 import com.kodlamaio.rentalservice.api.clients.CarClient;
+import com.kodlamaio.rentalservice.api.clients.PaymentClient;
 import com.kodlamaio.rentalservice.repository.RentalRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
-
 @Slf4j
 @Service
 @AllArgsConstructor
 public class RentalBusinessRules {
     private final RentalRepository repository;
-    private final CarClient client;
+    private final CarClient carClient;
+    private final PaymentClient paymentClient;
 
     public void checkIfRentalExists(UUID id) {
         if (!repository.existsById(id)) {
@@ -22,12 +27,18 @@ public class RentalBusinessRules {
         }
     }
     public void ensureCarIsAvailable(UUID carId) {
-        var response = client.checkIfCarAvailable(carId);
+        var response = carClient.checkIfCarAvailable(carId);
         if (!response.isSuccess()) {
             throw new BusinessException(response.getMessage());
         }
     }
 
+    public void ensurePaymentValid(CreateRentalPaymentRequest request){
+        var response= paymentClient.paymentValidation(request);
+        if (!response.isSuccess()){
+            throw new BusinessException(response.getMessage());
+        }
+    }
 
 }
 /*ASENKRON OLDUĞU İÇİN ÇALIŞTIRAMADIK :(((
