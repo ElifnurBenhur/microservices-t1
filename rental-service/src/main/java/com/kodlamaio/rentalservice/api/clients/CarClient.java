@@ -1,5 +1,6 @@
 package com.kodlamaio.rentalservice.api.clients;
 
+import com.kodlamaio.commonpackage.events.inventory.CarCreatedEvent;
 import com.kodlamaio.commonpackage.utils.dto.ClientResponse;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -12,4 +13,6 @@ import java.util.UUID;
 public interface CarClient {
     @GetMapping(value = "/api/cars/check-car-available/{carId}")
     ClientResponse checkIfCarAvailable(@PathVariable UUID carId);
+    @GetMapping(value = "/api/cars/carinfo/{carId}")
+    CarCreatedEvent getByIdForRental(@PathVariable UUID carId);
 }

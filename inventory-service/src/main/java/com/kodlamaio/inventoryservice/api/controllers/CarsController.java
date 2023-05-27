@@ -1,5 +1,6 @@
 package com.kodlamaio.inventoryservice.api.controllers;
 
+import com.kodlamaio.commonpackage.events.inventory.CarCreatedEvent;
 import com.kodlamaio.commonpackage.utils.dto.ClientResponse;
 import com.kodlamaio.inventoryservice.business.abstracts.CarService;
 import com.kodlamaio.inventoryservice.business.dto.requests.create.CreateCarRequest;
@@ -30,6 +31,11 @@ public class CarsController {
     @GetMapping("/{id}")
     public GetCarResponse getById(@PathVariable UUID id) {
         return service.getById(id);
+    }
+
+    @GetMapping("/carinfo/{id}")
+    public CarCreatedEvent getByIdForRental(@PathVariable UUID id) {
+        return service.getByIdForRental(id);
     }
 
     @PostMapping

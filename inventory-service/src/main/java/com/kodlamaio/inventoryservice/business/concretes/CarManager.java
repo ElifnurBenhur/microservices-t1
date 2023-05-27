@@ -52,6 +52,14 @@ public class CarManager implements CarService {
     }
 
     @Override
+    public CarCreatedEvent getByIdForRental(UUID id) {
+        rules.checkIfCarExists(id);
+        var car = repository.findById(id).orElseThrow();
+        var response = mapper.forResponse().map(car, CarCreatedEvent.class);
+
+        return response;
+    }
+    @Override
     public CreateCarResponse add(CreateCarRequest request) {
         var car = mapper.forRequest().map(request, Car.class);
         car.setId(UUID.randomUUID());

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Setter
@@ -14,4 +16,16 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RentalCreatedEvent implements Event {
     private UUID carId;
+    private String cardHolder; //payment request
+    private String modelName;
+    private String brandName;
+    private String plate;
+    private int modelYear;
+    private double dailyPrice;
+    private double totalPrice;
+    private int rentedForDays;
+    private LocalDateTime rentedAt;
+    public RentalCreatedEvent(UUID carId){
+        this.carId=carId;
+    }
 }

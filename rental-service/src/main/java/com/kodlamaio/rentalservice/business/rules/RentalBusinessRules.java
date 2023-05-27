@@ -1,10 +1,14 @@
 package com.kodlamaio.rentalservice.business.rules;
 
+import com.kodlamaio.commonpackage.events.inventory.CarCreatedEvent;
+import com.kodlamaio.commonpackage.events.rental.RentalCreatedEvent;
 import com.kodlamaio.commonpackage.utils.dto.ClientResponse;
 import com.kodlamaio.commonpackage.utils.dto.CreateRentalPaymentRequest;
 import com.kodlamaio.commonpackage.utils.exceptions.BusinessException;
 import com.kodlamaio.rentalservice.api.clients.CarClient;
 import com.kodlamaio.rentalservice.api.clients.PaymentClient;
+import com.kodlamaio.rentalservice.business.dto.requests.CreateRentalRequest;
+import com.kodlamaio.rentalservice.entities.Rental;
 import com.kodlamaio.rentalservice.repository.RentalRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +43,10 @@ public class RentalBusinessRules {
             throw new BusinessException(response.getMessage());
         }
     }
+
+
+
+
 
 }
 /*ASENKRON OLDUĞU İÇİN ÇALIŞTIRAMADIK :(((
