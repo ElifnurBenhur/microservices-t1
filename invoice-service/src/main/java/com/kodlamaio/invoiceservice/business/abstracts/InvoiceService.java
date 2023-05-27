@@ -14,8 +14,8 @@ import java.util.UUID;
 
 public interface InvoiceService {
     List<GetAllInvoicesResponse> getAll();
-    GetInvoiceResponse getById(UUID id);
+    GetInvoiceResponse getById(String id);
     CreateInvoiceResponse add(CreateInvoiceRequest request);
-    UpdateInvoiceResponse update(UUID id, UpdateInvoiceRequest request);
-    void delete(UUID id);
+    UpdateInvoiceResponse update(String id, UpdateInvoiceRequest request);
+    void delete(String id);
 }

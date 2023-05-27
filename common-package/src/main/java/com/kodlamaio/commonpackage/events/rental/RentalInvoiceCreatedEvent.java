@@ -1,20 +1,19 @@
-package com.kodlamaio.invoiceservice.business.dto.responses.get;
+package com.kodlamaio.commonpackage.events.rental;
 
+import com.kodlamaio.commonpackage.events.Event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetAllInvoicesResponse {
-    private String id;
-    private String cardHolder;
+public class RentalInvoiceCreatedEvent implements Event {
+    private String cardHolder; //payment request
     private String modelName;
     private String brandName;
     private String plate;

@@ -3,6 +3,7 @@ package com.kodlamaio.rentalservice.business.concretes;
 import com.kodlamaio.commonpackage.events.inventory.CarCreatedEvent;
 import com.kodlamaio.commonpackage.events.rental.RentalCreatedEvent;
 import com.kodlamaio.commonpackage.events.rental.RentalDeletedEvent;
+import com.kodlamaio.commonpackage.events.rental.RentalInvoiceCreatedEvent;
 import com.kodlamaio.commonpackage.utils.dto.CreateRentalPaymentRequest;
 import com.kodlamaio.commonpackage.utils.kafka.producer.KafkaProducer;
 import com.kodlamaio.commonpackage.utils.mappers.ModelMapperService;
@@ -70,7 +71,7 @@ public class RentalManager implements RentalService {
 
         repository.save(rental);
         sendKafkaRentalCreatedEvent(request.getCarId());
-        RentalCreatedEvent rentalRequest=new RentalCreatedEvent();
+        RentalInvoiceCreatedEvent rentalRequest=new RentalInvoiceCreatedEvent();
         createInvoiceRequest(request,rentalRequest,rental);
 
         sendKafkaRentalCreatedEventForInvoice(rentalRequest);
@@ -107,8 +108,8 @@ public class RentalManager implements RentalService {
         producer.sendMessage(new RentalCreatedEvent(carId), "rental-created");
     }
 
-    private void sendKafkaRentalCreatedEventForInvoice(RentalCreatedEvent event) {
-        producer.sendMessage(event, "rental-created");
+    private void sendKafkaRentalCreatedEventForInvoice(RentalInvoiceCreatedEvent event) {
+        producer.sendMessage(event, "rental-invoice-created");
     }
 
 
@@ -118,7 +119,7 @@ public class RentalManager implements RentalService {
         producer.sendMessage(new RentalDeletedEvent(carId), "rental-deleted");
     }
 
-    private void createInvoiceRequest(CreateRentalRequest request, RentalCreatedEvent invoiceRequest, Rental rental) {
+    private void createInvoiceRequest(CreateRentalRequest request, RentalInvoiceCreatedEvent invoiceRequest, Rental rental) {
         CarCreatedEvent car = carClient.getByIdForRental(request.getCarId());
 
         invoiceRequest.setRentedAt(rental.getRentedAt());

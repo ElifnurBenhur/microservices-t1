@@ -13,7 +13,7 @@ import java.util.UUID;
 public class InvoiceBusinessRules {
     private final InvoiceRepository repository;
 
-    public void checkIfInvoiceExists(UUID id) {
+    public void checkIfInvoiceExists(String id) {
         if (!repository.existsById(id)) {
             throw new BusinessException("INVOICE_NOT_FOUND");
         }

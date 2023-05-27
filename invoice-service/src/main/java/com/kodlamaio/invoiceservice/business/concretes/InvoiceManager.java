@@ -39,7 +39,7 @@ public class InvoiceManager implements InvoiceService {
     }
 
     @Override
-    public GetInvoiceResponse getById(UUID id) {
+    public GetInvoiceResponse getById(String id) {
         rules.checkIfInvoiceExists(id);
         Invoice invoice = repository.findById(id).orElseThrow();
         GetInvoiceResponse response = mapper.forResponse().map(invoice, GetInvoiceResponse.class);
@@ -59,7 +59,7 @@ public class InvoiceManager implements InvoiceService {
     }
 
     @Override
-    public UpdateInvoiceResponse update(UUID id, UpdateInvoiceRequest request) {
+    public UpdateInvoiceResponse update(String id, UpdateInvoiceRequest request) {
         rules.checkIfInvoiceExists(id);
         Invoice invoice = mapper.forRequest().map(request, Invoice.class);
         invoice.setId(id);
@@ -71,7 +71,7 @@ public class InvoiceManager implements InvoiceService {
     }
 
     @Override
-    public void delete(UUID id) {
+    public void delete(String id) {
         rules.checkIfInvoiceExists(id);
         repository.deleteById(id);
     }

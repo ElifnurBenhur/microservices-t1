@@ -24,17 +24,17 @@ public class InvoicesController {
     private final InvoiceService service;
 
 
-    @PostConstruct
+   /* @PostConstruct
     public void createDb(){
         service.add(new CreateInvoiceRequest());
-    }
+    }*/
     @GetMapping
     public List<GetAllInvoicesResponse> getAll() {
         return service.getAll();
     }
 
     @GetMapping("/{id}")
-    public GetInvoiceResponse getById(@PathVariable UUID id) {
+    public GetInvoiceResponse getById(@PathVariable String id) {
         return service.getById(id);
     }
 
@@ -45,13 +45,13 @@ public class InvoicesController {
     }
 
     @PutMapping("/{id}")
-    public UpdateInvoiceResponse update(@PathVariable UUID id, @RequestBody UpdateInvoiceRequest request) {
+    public UpdateInvoiceResponse update(@PathVariable String id, @RequestBody UpdateInvoiceRequest request) {
         return service.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable UUID id) {
+    public void delete(@PathVariable String id) {
         service.delete(id);
     }
 }

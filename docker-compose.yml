@@ -11,16 +11,14 @@ services:
     container_name: turkcell-filterdb
     image: mongo
     ports:
-      - "27018:27018"
+      - "27017:27017"
     volumes:
       - mongodb_filter_data:/data/db
   mongodb_invoice:
-    environment:
-      - MONGO_INITDB_DATABASE=invoicedb-t1
     container_name: turkcell-invoicedb
     image: mongo
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongodb_invoice_data:/data/db
   mysql:
