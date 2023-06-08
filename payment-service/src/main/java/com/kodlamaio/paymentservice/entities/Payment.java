@@ -18,6 +18,7 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    //TODO CustomerID tokenden cekerek ekle!!
     private String cardNumber;
     private String cardHolder;
     private int cardExpirationYear;
